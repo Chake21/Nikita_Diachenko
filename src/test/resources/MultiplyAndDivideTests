@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="MultiplyAndDivide" >
+    <test name="MultiplyAndDivide">
+        <classes>
+            <class name="ru.training.at.hw1.TestDivide"></class>
+            <class name="ru.training.at.hw1.TestMultiply"></class>
+        </classes>
+
+    </test>
+</suite>
