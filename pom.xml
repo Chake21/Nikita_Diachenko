@@ -14,6 +14,7 @@
         <hw1.systemPath>${project.basedir}/src/main/resources/calculator-1.0.jar</hw1.systemPath>
         <Tests.xml>src/test/resources/Tests.xml</Tests.xml>
         <checkstyle.version>8.41.1</checkstyle.version>
+        <selenium-java.version>3.141.59</selenium-java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -21,6 +22,11 @@
             <artifactId>testng</artifactId>
             <version>7.4.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>3.141.59</version>
         </dependency>
 
         <dependency>
@@ -91,11 +97,23 @@
     </properties>
 </profile>
 
-<profile>
-    <id>MultiplyAndDivide</id>
-    <properties>
-        <Tests.xml>src/test/resources/MultiplyAndDivideTests.xml</Tests.xml>
-    </properties>
-</profile>
-</profiles>
+        <profile>
+            <id>MultiplyAndDivide</id>
+            <properties>
+                <Tests.xml>src/test/resources/MultiplyAndDivideTests.xml</Tests.xml>
+            </properties>
+        </profile>
+        <profile>
+            <id>Hw2Ex1</id>
+            <properties>
+                <Tests.xml>src/test/resources/Hw2Ex1.xml</Tests.xml>
+            </properties>
+        </profile>
+        <profile>
+            <id>Hw2Ex2</id>
+            <properties>
+                <Tests.xml>src/test/resources/Hw2Ex2.xml</Tests.xml>
+            </properties>
+        </profile>
+    </profiles>
 </project>
