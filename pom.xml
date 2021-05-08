@@ -13,6 +13,7 @@
         <maven.compiler.target>8</maven.compiler.target>
         <hw1.systemPath>${project.basedir}/src/main/resources/calculator-1.0.jar</hw1.systemPath>
         <Tests.xml>src/test/resources/Tests.xml</Tests.xml>
+        <checkstyle.version>8.41.1</checkstyle.version>
     </properties>
     <dependencies>
         <dependency>
@@ -42,6 +43,36 @@
                     </suiteXmlFiles>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.2</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>
+                        <!--  pay attention to use exact url for checkstyle plugin ruleset  -->
+                        https://raw.githubusercontent.com/DmitryKhodakovsky/epam-test-auto-spring-2021/master/codestyle_checks.xml
+                    </configLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <violationSeverity>warning</violationSeverity>
+                    <consoleOutput>true</consoleOutput>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -56,14 +87,14 @@
         AddAndSubtractTests
     </id>
     <properties>
-        <Tests.xml>src/test/resources/AddAndSubtractTests</Tests.xml>
+        <Tests.xml>src/test/resources/SubtractAndAddTests.xml</Tests.xml>
     </properties>
 </profile>
 
 <profile>
     <id>MultiplyAndDivide</id>
     <properties>
-        <Tests.xml>src/test/resources/MultiplyAndDivideTests</Tests.xml>
+        <Tests.xml>src/test/resources/MultiplyAndDivideTests.xml</Tests.xml>
     </properties>
 </profile>
 </profiles>
