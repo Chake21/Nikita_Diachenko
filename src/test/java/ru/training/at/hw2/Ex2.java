@@ -1,5 +1,6 @@
 package ru.training.at.hw2;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -7,39 +8,45 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class Ex2 {
-    String check;
-    private WebDriverWait webDriverWait;
-    WebDriver webDriver;
+    private WebDriver webDriver;
+
+    @BeforeClass
+    public void driverSetup() {
+        WebDriverManager.chromedriver().setup();
+        webDriver = new ChromeDriver();
+    }
+
     WebElement webElement;
 
-
-    @Test
-    public void ex2Point1() {  //1.Open Test Site by Url
-        System.setProperty("webdriver.chrome.driver",
-                "/Users/Nikita/Downloads/chromedriver_win32/chromedriver.exe");
-        webDriver = new ChromeDriver();
+    @BeforeMethod
+    public void driverProperties() {
         webDriver.manage().window().maximize();
         webDriver.manage().timeouts()
                 .implicitlyWait(10, TimeUnit.SECONDS);
+    }
+
+    public void ex2Point1() {  //1.Open Test Site by Url
         webDriver.get("https://jdi-testing.github.io/jdi-light/index.html");
         Assert.assertEquals("https://jdi-testing.github.io/jdi-light/index.html",
                 webDriver.getCurrentUrl());
     }
 
-    @Test
     public void ex2Point2() {  //2.Assert Browser title
         webElement = webDriver.findElement(By.xpath("//header"));
         Assert.assertEquals("Home Page",
                 webDriver.getTitle());
     }
 
-    @Test
     public void ex2Point3() {  //3. Perform login
         webElement = webDriver.findElement(
                 By.cssSelector("ul.uui-navigation.navbar-nav.navbar-right"));
@@ -48,20 +55,15 @@ public class Ex2 {
         webElement.sendKeys("Roman");
         webElement = webDriver.findElement(By.id("password"));
         webElement.sendKeys("Jdi1234");
-        webElement = webDriver.findElement(By.cssSelector(
-                "button.uui-button.dark-blue.btn-login"));
-        Assert.assertEquals("ENTER", webElement.getText());
+        WebElement login = webDriver.findElement(By.cssSelector("#login-button"));
+        login.click();
     }
 
-    @Test
     public void ex2Point4() {  //4. Assert Username is loggined
-        webElement = webDriver.findElement(By.id("login-button"));
-        webElement.click();
         webElement = webDriver.findElement(By.id("user-name"));
-        Assert.assertEquals("ROMAN IOVLEV", webElement.getText());
+        Assert.assertEquals(webElement.getText(), "ROMAN IOVLEV");
     }
 
-    @Test
     public void ex2Point5() {  //5.Open through the header menu Service -> Different Elements Page
         webElement = webDriver.findElement(By.cssSelector("a.dropdown-toggle"));
         webElement.click();
@@ -69,19 +71,15 @@ public class Ex2 {
         webElement.click();
     }
 
-    @Test
     public void ex2Point6() {  //6.Select checkboxes
         List<WebElement> webElements = webDriver.findElements(By.className("label-checkbox"));
         for (WebElement e : webElements) {
-            if (e.getText().equals("Water")) {
-                e.click();
-            } else if (e.getText().equals("Wind")) {
+            if (e.getText().equals("Water") | e.getText().equals("Wind")) {
                 e.click();
             }
         }
     }
 
-    @Test
     public void ex2Point7() {  //7.Select radio
         List<WebElement> webElements = webDriver.findElements(By.className("label-radio"));
         for (WebElement e : webElements) {
@@ -91,31 +89,47 @@ public class Ex2 {
         }
     }
 
-    @Test
     public void ex2Point8() {  //8. Select in dropdown
         webElement = webDriver.findElement(By.className("colors"));
         webElement.click();
-        webElement = webDriver.findElement(By.cssSelector("option:nth-child(4)"));
-        webElement.click();
+        List<WebElement> options = webDriver.findElements(By.tagName("option"));
+        for (WebElement option : options) {
+            if ("Yellow".equals(option.getText())) {
+                option.click();
+            }
+        }
 
     }
 
-    @Test
     public void ex2Point9() {  //9.Logs Asserts
         List<WebElement> webElements = webDriver.findElements(By.className(
                 "info-panel-section"));
         for (WebElement e : webElements) {
             Assert.assertTrue(e.isDisplayed());
-            if (e.getText().contains("Water")) {
-                Assert.assertTrue(e.getText().contains("Water"));
-            } else if (e.getText().contains("Wind")) {
-                Assert.assertTrue(e.getText().contains("Wind"));
-            } else if (e.getText().contains("Selen")) {
-                Assert.assertTrue(e.getText().contains("Selen"));
-            } else if (e.getText().contains("Yellow")) {
-                Assert.assertTrue(e.getText().contains("Yellow"));
-            }
         }
+
+        List<String> actualCollection = webElements.stream()
+                .map(WebElement::getText).collect(Collectors.toList());
+        List<String> expectedCollection = Arrays
+                .asList("Yellow", "Selen", "Water", "Wind");
+        Assert.assertTrue(actualCollection.get(0).contains(expectedCollection.get(0)));
+        Assert.assertTrue(actualCollection.get(0).contains(expectedCollection.get(1)));
+        Assert.assertTrue(actualCollection.get(0).contains(expectedCollection.get(2)));
+        Assert.assertTrue(actualCollection.get(0).contains(expectedCollection.get(3)));
+
+    }
+
+    @Test
+    public void runTests() {
+        ex2Point1();
+        ex2Point2();
+        ex2Point3();
+        ex2Point4();
+        ex2Point5();
+        ex2Point6();
+        ex2Point7();
+        ex2Point8();
+        ex2Point9();
     }
 
     @AfterClass
