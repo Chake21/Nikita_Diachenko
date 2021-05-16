@@ -5,12 +5,121 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>Nikita_Diachenko</artifactId>
+    <artifactId>hw1</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <hw1.systemPath>${project.basedir}/src/main/resources/calculator-1.0.jar</hw1.systemPath>
+        <Tests.xml>src/test/resources/Tests.xml</Tests.xml>
+        <checkstyle.version>8.41.1</checkstyle.version>
+        <selenium-java.version>3.141.59</selenium-java.version>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>3.141.59</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>4.4.3</version>
+            <scope>test</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>com.epam</groupId>
+            <artifactId>hw1</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${hw1.systemPath}</systemPath>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${Tests.xml}</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.2</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>
+                        <!--  pay attention to use exact url for checkstyle plugin ruleset  -->
+                        https://raw.githubusercontent.com/DmitryKhodakovsky/epam-test-auto-spring-2021/master/codestyle_checks.xml
+                    </configLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <violationSeverity>warning</violationSeverity>
+                    <consoleOutput>true</consoleOutput>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>AllOperations</id>
+        </profile>
+
+
+<profile>
+    <id>
+        AddAndSubtractTests
+    </id>
+    <properties>
+        <Tests.xml>src/test/resources/SubtractAndAddTests.xml</Tests.xml>
+    </properties>
+</profile>
+
+        <profile>
+            <id>MultiplyAndDivide</id>
+            <properties>
+                <Tests.xml>src/test/resources/MultiplyAndDivideTests.xml</Tests.xml>
+            </properties>
+        </profile>
+        <profile>
+            <id>Hw2Ex1</id>
+            <properties>
+                <Tests.xml>src/test/resources/Hw2Ex1.xml</Tests.xml>
+            </properties>
+        </profile>
+        <profile>
+            <id>Hw2Ex2</id>
+            <properties>
+                <Tests.xml>src/test/resources/Hw2Ex2.xml</Tests.xml>
+            </properties>
+        </profile>
+    </profiles>
 </project>
