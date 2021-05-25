@@ -14,7 +14,9 @@
         <hw1.systemPath>${project.basedir}/src/main/resources/calculator-1.0.jar</hw1.systemPath>
         <Tests.xml>src/test/resources/Tests.xml</Tests.xml>
         <checkstyle.version>8.41.1</checkstyle.version>
+        <allure.version>2.13.2</allure.version>
         <selenium-java.version>3.141.59</selenium-java.version>
+        <aspectj.version>1.8.10</aspectj.version>
     </properties>
     <dependencies>
         <dependency>
@@ -22,6 +24,11 @@
             <artifactId>testng</artifactId>
             <version>7.4.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure.version}</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
@@ -42,12 +49,6 @@
             <scope>system</scope>
             <systemPath>${hw1.systemPath}</systemPath>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>RELEASE</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -56,11 +57,20 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.12.4</version>
                 <configuration>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
                     <suiteXmlFiles>
                         <suiteXmlFile>${Tests.xml}</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.7.1</version>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -71,10 +81,14 @@
                         <artifactId>checkstyle</artifactId>
                         <version>${checkstyle.version}</version>
                     </dependency>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
                 </dependencies>
                 <configuration>
                     <configLocation>
-                        <!--  pay attention to use exact url for checkstyle plugin ruleset  -->
                         https://raw.githubusercontent.com/DmitryKhodakovsky/epam-test-auto-spring-2021/master/codestyle_checks.xml
                     </configLocation>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
@@ -91,6 +105,7 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 
@@ -139,5 +154,36 @@
                 <Tests.xml>src/test/resources/Hw3Ex2.xml</Tests.xml>
             </properties>
         </profile>
+        <profile>
+            <id>Hw4</id>
+            <properties>
+                <Tests.xml>src/test/resources/Hw4.xml</Tests.xml>
+            </properties>
+        </profile>
+        <profile>
+            <id>Hw4Ex1Steps</id>
+            <properties>
+                <Tests.xml>src/test/resources/Hw4Ex1Steps.xml</Tests.xml>
+            </properties>
+        </profile>
+        <profile>
+            <id>Hw4Ex2Steps</id>
+            <properties>
+                <Tests.xml>src/test/resources/Hw4Ex2Steps.xml</Tests.xml>
+            </properties>
+        </profile>
     </profiles>
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <plugins>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.10.0</version>
+                <configuration>
+                    <reportVersion>${allure.version}</reportVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

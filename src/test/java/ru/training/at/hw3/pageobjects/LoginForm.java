@@ -1,15 +1,11 @@
-package ru.training.at.hw3;
+package ru.training.at.hw3.pageobjects;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.testng.annotations.BeforeClass;
-import ru.training.at.hw3.driverutils.DriverManager;
 
-
-public class LoginForm extends DriverManager {
-    DriverManager driverManager;
+public class LoginForm {
 
     public LoginForm(WebDriver driver) {
         PageFactory.initElements(driver, this);

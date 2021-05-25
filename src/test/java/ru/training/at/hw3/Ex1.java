@@ -1,14 +1,16 @@
 package ru.training.at.hw3;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.FindBy;
 import org.testng.annotations.*;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.asserts.SoftAssert;
-
-import java.util.List;
-
+import ru.training.at.hw3.pageobjects.*;
 import ru.training.at.hw3.driverutils.DriverManager;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Properties;
+import java.io.FileInputStream;
 
 public class Ex1 extends DriverManager {
 
@@ -16,101 +18,93 @@ public class Ex1 extends DriverManager {
     private final LoginForm loginFormPage;
     private final HeaderOfPage headerOfPage;
     private final SidebarMenu sidebarMenu;
+    private final HomePage homePage;
+    private final FileInputStream fileInputStream;
+    WebDriver webDriver = driverManager.setupDriver();
 
-    public Ex1() {
-        driverManager.setupDriver();
-        PageFactory.initElements(driver, this);
-        loginFormPage = new LoginForm(driver);
-        headerOfPage = new HeaderOfPage(driver);
-        sidebarMenu = new SidebarMenu(driver);
+    public Ex1() throws IOException {
 
+        PageFactory.initElements(webDriver, this);
+        loginFormPage = new LoginForm(webDriver);
+        headerOfPage = new HeaderOfPage(webDriver);
+        sidebarMenu = new SidebarMenu(webDriver);
+        homePage = new HomePage(webDriver);
+        fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);
+        prop.load(fileInputStream);
     }
 
-    public LoginForm getLoginFormPage() {
-        return loginFormPage;
-    }
-
-    public HeaderOfPage getHeaderOfPage() {
-        return headerOfPage;
-    }
-
-    public SidebarMenu getSidebarMenu() {
-        return sidebarMenu;
-    }
-
-
-    @FindBy(className = "benefit-icon")
-    private List<WebElement> iconsList;
-    @FindBy(className = "benefit-txt")
-    private List<WebElement> textsOfImages;
-    @FindBy(id = "frame")
-    private WebElement frame;
-    @FindBy(id = "frame-button")
-    private WebElement frameButton;
+    public static final String PATH_TO_PROPERTIES = "src/test/resources/config.properties";
+    Properties prop = new Properties();
 
 
     public void openTestSite(SoftAssert softly) {
-        driver.get(Locators.getHomepage());
-        softly.assertEquals(driver.getCurrentUrl(),
-                Locators.getHomepage());
+        webDriver.get(prop.getProperty("Homepage"));
+        softly.assertEquals(webDriver.getCurrentUrl(),
+                prop.getProperty("Homepage"));
     }
 
     public void browserTitleAssertion(SoftAssert softly) {
-        softly.assertEquals(driver.getTitle(), Locators.getTitle());
+        softly.assertEquals(webDriver.getTitle(), prop.getProperty("Title"));
     }
 
     public void login(SoftAssert softly) {
         loginFormPage.getLoginForm().click();
-        loginFormPage.getNameField().sendKeys(Locators.getName());
-        loginFormPage.getPassField().sendKeys(Locators.getPassword());
+        loginFormPage.getNameField().sendKeys(prop.getProperty("Name"));
+        loginFormPage.getPassField().sendKeys(prop.getProperty("Password"));
         loginFormPage.getLoginButton().click();
         softly.assertEquals(loginFormPage.getLoggedButton().getText(),
-                Locators.getMessageForLoginCheck());
+                prop.getProperty("MessageForLoginCheck"));
     }
 
     public void loginAssertion(SoftAssert softly) {
         softly.assertEquals(loginFormPage.getUserName().getText(),
-                Locators.getNameForLoginCheck());
+                prop.getProperty("NameForLoginCheck"));
     }
 
     public void assertionOfCountOfTextsOfMenu(SoftAssert softly) {
         for (WebElement image : headerOfPage.getImagesList()) {
             softly.assertTrue(image.isDisplayed());
-            softly.assertEquals(image.getText(), Locators.getExpectedTextsOfMenu()
+            softly.assertEquals(image.getText(), Arrays
+                    .asList(prop.getProperty("ExpectedTextsOfMenu").split(","))
                     .get(headerOfPage.getImagesList().indexOf(image)));
         }
     }
 
     public void assertionOfCountOfImages(SoftAssert softly) {
-        for (WebElement icon : iconsList) {
-            softly.assertTrue(icon.isDisplayed(), Locators.getAllertForMessageIsntDisplayed());
+        for (WebElement icon : homePage.getIconsList()) {
+            softly.assertTrue(icon.isDisplayed(), prop
+                    .getProperty("AllertForMessageIsntDisplayed"));
         }
     }
 
     public void assertionOfTextsOfImages(SoftAssert softly) {
-        for (WebElement textOfImage : textsOfImages) {
-            softly.assertTrue(textOfImage.isDisplayed());
-            softly.assertEquals(textsOfImages.indexOf(textOfImage.getText()),
-                    Locators.getExpectedTextsOfImages().indexOf(textOfImage));
+        for (WebElement image : homePage.getTextsOfImages()) {
+            softly.assertTrue(image.isDisplayed());
+            softly.assertEquals(homePage.getTextsOfImages()
+                            .get(homePage.getTextsOfImages().indexOf(image)).getText(),
+                    Arrays.asList(prop
+                            .getProperty("ExpectedTextsOfImages").split("!"))
+                            .get(homePage.getTextsOfImages().indexOf(image)));
         }
     }
 
     public void assertionOfIframesExistence(SoftAssert softly) {
-        softly.assertTrue(frame.isEnabled(), Locators.getAllertForFrameIsntDisplayed());
+        softly.assertTrue(homePage.getFrame().isEnabled(), prop
+                .getProperty("AllertForFrameIsntDisplayed"));
     }
 
     public void assertionOfButtonsExistence(SoftAssert softly) {
-        driver.switchTo().frame(frame);
-        softly.assertTrue(frameButton.isDisplayed());
-        driver.switchTo().defaultContent();  //10.Switch to original window back
+        webDriver.switchTo().frame(homePage.getFrame());
+        softly.assertTrue(homePage.getFrameButton().isDisplayed());
+        webDriver.switchTo().defaultContent();  //10.Switch to original window back
     }
 
     public void assertionOfSidebarsText(SoftAssert softly) {
         for (WebElement navigationSidebarsElement : sidebarMenu.getNavigationSidebar()) {
             navigationSidebarsElement.isDisplayed();
         }
-        softly.assertEquals(sidebarMenu.getNavigationSidebar().get(0).getText(), Locators
-                .getExpectedNavigationSidebarsText());
+        softly.assertEquals(sidebarMenu.getNavigationSidebar().get(0).getText(),
+                prop.getProperty("ExpectedNavigationSidebarText"));
     }
 
     @Test
@@ -131,6 +125,6 @@ public class Ex1 extends DriverManager {
 
     @AfterClass
     public void clear() {
-        driver.close();
+        webDriver.close();
     }
 }

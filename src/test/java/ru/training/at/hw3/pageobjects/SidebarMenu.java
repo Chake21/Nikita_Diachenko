@@ -1,15 +1,12 @@
-package ru.training.at.hw3;
+package ru.training.at.hw3.pageobjects;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import ru.training.at.hw3.driverutils.DriverManager;
-
 import java.util.List;
 
-public class SidebarMenu extends DriverManager {
-    DriverManager driverManager;
+public class SidebarMenu {
     private LoginForm loginFormPage;
     private HeaderOfPage headerOfPage;
     private SidebarMenu sidebarMenu;

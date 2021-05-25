@@ -2,104 +2,81 @@ package ru.training.at.hw3;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
 import ru.training.at.hw3.driverutils.DriverManager;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
+
+import ru.training.at.hw3.pageobjects.*;
 
 public class Ex2 extends DriverManager {
 
     DriverManager driverManager = new DriverManager();
+    WebDriver webDriver = driverManager.setupDriver();
     private final LoginForm loginFormPage;
     private final HeaderOfPage headerOfPage;
     private final SidebarMenu sidebarMenu;
     private final ElementsPage elementsPage;
+    private final HomePage homePage;
+    private final FileInputStream fileInputStream;
 
-    public Ex2() {
-        driverManager.setupDriver();
-        PageFactory.initElements(driver, this);
-        loginFormPage = new LoginForm(driver);
-        headerOfPage = new HeaderOfPage(driver);
-        sidebarMenu = new SidebarMenu(driver);
-        elementsPage = new ElementsPage(driver);
+    public Ex2() throws IOException {
+        webDriver = driverManager.setupDriver();
+        PageFactory.initElements(webDriver, this);
+        loginFormPage = new LoginForm(webDriver);
+        headerOfPage = new HeaderOfPage(webDriver);
+        sidebarMenu = new SidebarMenu(webDriver);
+        elementsPage = new ElementsPage(webDriver);
+        homePage = new HomePage(webDriver);
+        fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);
+        prop.load(fileInputStream);
 
     }
 
-    public ElementsPage getElementsPage() {
-        return elementsPage;
-    }
-
-    public LoginForm getLoginFormPage() {
-        return loginFormPage;
-    }
-
-    public HeaderOfPage getHeaderOfPage() {
-        return headerOfPage;
-    }
-
-    public SidebarMenu getSidebarMenu() {
-        return sidebarMenu;
-    }
-
-    @FindBy(css = "ul.uui-navigation.navbar-nav.navbar-right")
-    private WebElement loginForm;
-    @FindBy(css = "#login-button")
-    private WebElement loginButton;
-    @FindBy(id = "name")
-    private WebElement nameField;
-    @FindBy(id = "password")
-    private WebElement passField;
-    @FindBy(id = "user-name")
-    private WebElement userName;
-    @FindBy(css = "body > header > div > nav > ul.uui-navigation.navbar-nav.navbar-right"
-            + " > li > div > div > button")
-    private WebElement loggedButton;
-    @FindBy(css = "a.dropdown-toggle")
-    private WebElement openMenuService;
-    @FindBy(linkText = "DIFFERENT ELEMENTS")
-    private WebElement openDifferentElements;
-
+    public static final String PATH_TO_PROPERTIES = "src/test/resources/config.properties";
+    Properties prop = new Properties();
 
     public void openTestSite() {
-        driver.get(Locators.getHomepage());
-        Assert.assertEquals(driver.getCurrentUrl(),
-                Locators.getHomepage());
+        webDriver.get(prop.getProperty("Homepage"));
+        Assert.assertEquals(webDriver.getCurrentUrl(),
+                prop.getProperty("Homepage"));
     }
 
     public void browserTitleAssertion() {
-        Assert.assertEquals(driver.getTitle(), Locators.getTitle());
+        Assert.assertEquals(webDriver.getTitle(), prop.getProperty("Title"));
     }
 
     public void login() {
         loginFormPage.getLoginForm().click();
-        loginFormPage.getNameField().sendKeys(Locators.getName());
-        loginFormPage.getPassField().sendKeys(Locators.getPassword());
+        loginFormPage.getNameField().sendKeys(prop.getProperty("Name"));
+        loginFormPage.getPassField().sendKeys(prop.getProperty("Password"));
         loginFormPage.getLoginButton().click();
         Assert.assertEquals(loginFormPage.getLoggedButton().getText(),
-                Locators.getMessageForLoginCheck());
+                prop.getProperty("MessageForLoginCheck"));
     }
 
     public void loginAssertion() {
         Assert.assertEquals(loginFormPage.getUserName().getText(),
-                Locators.getNameForLoginCheck());
+                prop.getProperty("NameForLoginCheck"));
     }
 
     public void openDifferentElementsPage() {
-        openMenuService.click();
-        openDifferentElements.click();
+        homePage.getOpenMenuService().click();
+        homePage.getOpenDifferentElements().click();
     }
 
     public void selectCheckboxes() {
         for (WebElement checkbox : elementsPage.getCheckboxes()) {
-            if (checkbox.getText().equals(Locators.getWater()) | checkbox
-                    .getText().equals(Locators.getWind())) {
+            if (checkbox.getText().equals(prop.getProperty("Water"))
+                    || checkbox.getText().equals(prop.getProperty("Water"))) {
                 checkbox.click();
             }
         }
@@ -107,7 +84,7 @@ public class Ex2 extends DriverManager {
 
     public void selectRadio() {
         for (WebElement radio : elementsPage.getRadios()) {
-            if (radio.getText().equals(Locators.getSelen())) {
+            if (radio.getText().equals(prop.getProperty("Selen"))) {
                 radio.click();
             }
         }
@@ -116,7 +93,7 @@ public class Ex2 extends DriverManager {
     public void selectInDropdown() {
         elementsPage.getColorsDropdown().click();
         for (WebElement option : elementsPage.getOptions()) {
-            if (Locators.getYellow().equals(option.getText())) {
+            if (prop.getProperty("Yellow").equals(option.getText())) {
                 option.click();
             }
         }
@@ -128,18 +105,12 @@ public class Ex2 extends DriverManager {
         for (WebElement section : elementsPage.getPanelSection()) {
             Assert.assertTrue(section.isDisplayed());
         }
-
         List<String> actualCollection = elementsPage.getPanelSection().stream()
                 .map(WebElement::getText).collect(Collectors.toList());
-        Assert.assertTrue(actualCollection.get(0)
-                .contains(Locators.getExpectedLogsParts().get(0)));
-        Assert.assertTrue(actualCollection.get(0)
-                .contains(Locators.getExpectedLogsParts().get(1)));
-        Assert.assertTrue(actualCollection.get(0)
-                .contains(Locators.getExpectedLogsParts().get(2)));
-        Assert.assertTrue(actualCollection.get(0)
-                .contains(Locators.getExpectedLogsParts().get(3)));
-
+        for (int i = 0; i < actualCollection.size(); i++) {
+            Assert.assertTrue(actualCollection.get(0).contains(Arrays
+                    .asList(prop.getProperty("ExpectedLogsParts").split(",")).get(i)));
+        }
     }
 
     @Test
@@ -157,6 +128,6 @@ public class Ex2 extends DriverManager {
 
     @AfterClass
     public void clear() {
-        driver.close();
+        webDriver.close();
     }
 }
