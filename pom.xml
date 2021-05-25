@@ -41,7 +41,6 @@
             <version>4.4.3</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>com.epam</groupId>
             <artifactId>hw1</artifactId>
@@ -158,18 +157,6 @@
             <id>Hw4</id>
             <properties>
                 <Tests.xml>src/test/resources/Hw4.xml</Tests.xml>
-            </properties>
-        </profile>
-        <profile>
-            <id>Hw4Ex1Steps</id>
-            <properties>
-                <Tests.xml>src/test/resources/Hw4Ex1Steps.xml</Tests.xml>
-            </properties>
-        </profile>
-        <profile>
-            <id>Hw4Ex2Steps</id>
-            <properties>
-                <Tests.xml>src/test/resources/Hw4Ex2Steps.xml</Tests.xml>
             </properties>
         </profile>
     </profiles>

@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Hw4">
+    <listeners>
+        <listener class-name="ru.training.at.hw4.listeners.ScreenshotListener"/>
+    </listeners>
+    <test name="Hw4">
+        <classes>
+            <class name="ru.training.at.hw4.Ex1Steps"></class>
+            <class name="ru.training.at.hw4.Ex2Steps"></class>
+            <class name="ru.training.at.hw4.Hw4FailedTest"></class>
+        </classes>
+    </test>
+</suite>
