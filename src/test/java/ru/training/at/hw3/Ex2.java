@@ -20,10 +20,8 @@ import ru.training.at.hw3.pageobjects.*;
 public class Ex2 extends DriverManager {
 
     DriverManager driverManager = new DriverManager();
-    WebDriver webDriver = driverManager.setupDriver();
+    WebDriver webDriver;
     private final LoginForm loginFormPage;
-    private final HeaderOfPage headerOfPage;
-    private final SidebarMenu sidebarMenu;
     private final ElementsPage elementsPage;
     private final HomePage homePage;
     private final FileInputStream fileInputStream;
@@ -32,8 +30,6 @@ public class Ex2 extends DriverManager {
         webDriver = driverManager.setupDriver();
         PageFactory.initElements(webDriver, this);
         loginFormPage = new LoginForm(webDriver);
-        headerOfPage = new HeaderOfPage(webDriver);
-        sidebarMenu = new SidebarMenu(webDriver);
         elementsPage = new ElementsPage(webDriver);
         homePage = new HomePage(webDriver);
         fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);

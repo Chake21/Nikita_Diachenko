@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.io.FileInputStream;
 
-public class Ex1 extends DriverManager {
+public class Ex1 {
 
     DriverManager driverManager = new DriverManager();
     private final LoginForm loginFormPage;
@@ -37,89 +37,89 @@ public class Ex1 extends DriverManager {
     Properties prop = new Properties();
 
 
-    public void openTestSite(SoftAssert softly) {
+    public void openTestSite(SoftAssert softly, Object expectedValue) {
         webDriver.get(prop.getProperty("Homepage"));
         softly.assertEquals(webDriver.getCurrentUrl(),
-                prop.getProperty("Homepage"));
+                expectedValue);
     }
 
-    public void browserTitleAssertion(SoftAssert softly) {
-        softly.assertEquals(webDriver.getTitle(), prop.getProperty("Title"));
+    public void browserTitleAssertion(SoftAssert softly, Object expectedValue) {
+        softly.assertEquals(webDriver.getTitle(), expectedValue);
     }
 
-    public void login(SoftAssert softly) {
+    public void login(SoftAssert softly, Object expectedValue) {
         loginFormPage.getLoginForm().click();
         loginFormPage.getNameField().sendKeys(prop.getProperty("Name"));
         loginFormPage.getPassField().sendKeys(prop.getProperty("Password"));
         loginFormPage.getLoginButton().click();
         softly.assertEquals(loginFormPage.getLoggedButton().getText(),
-                prop.getProperty("MessageForLoginCheck"));
+                expectedValue);
     }
 
-    public void loginAssertion(SoftAssert softly) {
+    public void loginAssertion(SoftAssert softly, Object expectedValue) {
         softly.assertEquals(loginFormPage.getUserName().getText(),
-                prop.getProperty("NameForLoginCheck"));
+                expectedValue);
     }
 
-    public void assertionOfCountOfTextsOfMenu(SoftAssert softly) {
+    public void assertionOfCountOfTextsOfMenu(SoftAssert softly, String expectedValue) {
         for (WebElement image : headerOfPage.getImagesList()) {
             softly.assertTrue(image.isDisplayed());
             softly.assertEquals(image.getText(), Arrays
-                    .asList(prop.getProperty("ExpectedTextsOfMenu").split(","))
+                    .asList(expectedValue.split(","))
                     .get(headerOfPage.getImagesList().indexOf(image)));
         }
     }
 
-    public void assertionOfCountOfImages(SoftAssert softly) {
+    public void assertionOfCountOfImages(SoftAssert softly, String expectedValue) {
         for (WebElement icon : homePage.getIconsList()) {
-            softly.assertTrue(icon.isDisplayed(), prop
-                    .getProperty("AllertForMessageIsntDisplayed"));
+            softly.assertTrue(icon.isDisplayed(), expectedValue);
         }
     }
 
-    public void assertionOfTextsOfImages(SoftAssert softly) {
+    public void assertionOfTextsOfImages(SoftAssert softly, String expectedValue) {
         for (WebElement image : homePage.getTextsOfImages()) {
             softly.assertTrue(image.isDisplayed());
             softly.assertEquals(homePage.getTextsOfImages()
                             .get(homePage.getTextsOfImages().indexOf(image)).getText(),
-                    Arrays.asList(prop
-                            .getProperty("ExpectedTextsOfImages").split("!"))
+                    Arrays.asList(expectedValue.split("!"))
                             .get(homePage.getTextsOfImages().indexOf(image)));
         }
     }
 
-    public void assertionOfIframesExistence(SoftAssert softly) {
-        softly.assertTrue(homePage.getFrame().isEnabled(), prop
-                .getProperty("AllertForFrameIsntDisplayed"));
+    public void assertionOfIframesExistence(SoftAssert softly, String expectedValue) {
+        softly.assertTrue(homePage.getFrame().isEnabled(), expectedValue);
     }
 
-    public void assertionOfButtonsExistence(SoftAssert softly) {
+    public void assertionOfButtonsExistence(SoftAssert softly, WebElement expectedValue) {
         webDriver.switchTo().frame(homePage.getFrame());
-        softly.assertTrue(homePage.getFrameButton().isDisplayed());
+        softly.assertTrue(expectedValue.isDisplayed());
         webDriver.switchTo().defaultContent();  //10.Switch to original window back
     }
 
-    public void assertionOfSidebarsText(SoftAssert softly) {
+    public void assertionOfSidebarsText(SoftAssert softly, Object expectedValue) {
         for (WebElement navigationSidebarsElement : sidebarMenu.getNavigationSidebar()) {
             navigationSidebarsElement.isDisplayed();
         }
         softly.assertEquals(sidebarMenu.getNavigationSidebar().get(0).getText(),
-                prop.getProperty("ExpectedNavigationSidebarText"));
+                expectedValue);
     }
 
     @Test
     public void runTests() {
         SoftAssert softly = new SoftAssert();
-        openTestSite(softly);
-        browserTitleAssertion(softly);
-        login(softly);
-        loginAssertion(softly);
-        assertionOfCountOfTextsOfMenu(softly);
-        assertionOfCountOfImages(softly);
-        assertionOfTextsOfImages(softly);
-        assertionOfIframesExistence(softly);
-        assertionOfButtonsExistence(softly);
-        assertionOfSidebarsText(softly);
+        openTestSite(softly, prop.getProperty("Homepage"));
+        browserTitleAssertion(softly, prop.getProperty("Title"));
+        login(softly, prop.getProperty("MessageForLoginCheck"));
+        loginAssertion(softly, prop.getProperty("NameForLoginCheck"));
+        assertionOfCountOfTextsOfMenu(softly, prop.getProperty("ExpectedTextsOfMenu"));
+        assertionOfCountOfImages(softly, prop
+                .getProperty("AllertForMessageIsntDisplayed"));
+        assertionOfTextsOfImages(softly, prop
+                .getProperty("ExpectedTextsOfImages"));
+        assertionOfIframesExistence(softly, prop
+                .getProperty("AllertForFrameIsntDisplayed"));
+        assertionOfButtonsExistence(softly, homePage.getFrameButton());
+        assertionOfSidebarsText(softly, prop.getProperty("ExpectedNavigationSidebarText"));
         softly.assertAll();
     }
 
