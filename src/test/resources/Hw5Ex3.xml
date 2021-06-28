@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Hw5">
+    <test name="Hw5">
+        <classes>
+            <class name="ru.training.at.hw5.Ex3"></class>
+        </classes>
+    </test>
+</suite>
