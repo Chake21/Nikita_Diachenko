@@ -11,7 +11,9 @@ import org.testng.asserts.SoftAssert;
 import ru.training.at.hw4.driverutils.DriverManager;
 import ru.training.at.hw4.ex1steps.*;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 
 public class Ex1Steps extends DriverManager {
@@ -24,17 +26,21 @@ public class Ex1Steps extends DriverManager {
     WebDriver webDriver = driverManager.setupDriver();
 
 
-    public Ex1Steps() throws IOException {
 
+    public Ex1Steps() throws IOException {
         PageFactory.initElements(webDriver, this);
         headerOfPageSteps = new HeaderOfPageSteps(webDriver);
         homePageSteps = new HomePageSteps(webDriver);
         loginFormSteps = new LoginFormSteps(webDriver);
         openSiteSteps = new OpenSiteSteps(webDriver);
         sidebarMenuSteps = new SidebarMenuSteps(webDriver);
+        fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);
+        prop.load(fileInputStream);
     }
 
     public static final String PATH_TO_PROPERTIES = "src/test/resources/config.properties";
+    private final FileInputStream fileInputStream;
+    public static final Properties prop = new Properties();
     SoftAssert softly = new SoftAssert();
 
     @BeforeMethod
@@ -63,7 +69,7 @@ public class Ex1Steps extends DriverManager {
     @Story("Login in")
     @Test(priority = 3)
     public void login() {
-        loginFormSteps.login(softly, webDriver);
+        loginFormSteps.login(softly);
     }
 
     @Epic("Exercise 1")
@@ -71,14 +77,14 @@ public class Ex1Steps extends DriverManager {
     @Story("Login Assertion")
     @Test(priority = 4)
     public void loginAssertion() {
-        loginFormSteps.loginAssertion(softly, webDriver);
+        loginFormSteps.loginAssertion(softly);
     }
 
     @Epic("Exercise 1")
     @Story("Assertion of count of texts")
     @Test(priority = 5)
     public void headerAssertion() {
-        headerOfPageSteps.assertionOfCountOfTextsOfMenu(softly, webDriver);
+        headerOfPageSteps.assertionOfCountOfTextsOfMenu(softly);
     }
 
     @Epic("Exercise 1")
@@ -86,7 +92,7 @@ public class Ex1Steps extends DriverManager {
     @Story("Assertion of count of images")
     @Test(priority = 6)
     public void countOfImagesAssertion() {
-        homePageSteps.assertionOfCountOfImages(softly, webDriver);
+        homePageSteps.assertionOfCountOfImages(softly);
     }
 
     @Epic("Exercise 1")
@@ -94,7 +100,7 @@ public class Ex1Steps extends DriverManager {
     @Story("Assertion of texts of images")
     @Test(priority = 7)
     public void textOfImagesAssertion() {
-        homePageSteps.assertionOfTextsOfImages(softly, webDriver);
+        homePageSteps.assertionOfTextsOfImages(softly);
     }
 
     @Epic("Exercise 1")
@@ -102,7 +108,7 @@ public class Ex1Steps extends DriverManager {
     @Story("Assertion of frames existence")
     @Test(priority = 8)
     public void framesExistenceAssertion() {
-        homePageSteps.assertionOfIframesExistence(softly, webDriver);
+        homePageSteps.assertionOfIframesExistence(softly);
     }
 
     @Epic("Exercise 1")
@@ -117,7 +123,7 @@ public class Ex1Steps extends DriverManager {
     @Story("Assertion of sidebars text")
     @Test(priority = 10)
     public void textOfSidebarsAssertion() {
-        sidebarMenuSteps.assertionOfSidebarsText(softly, webDriver);
+        sidebarMenuSteps.assertionOfSidebarsText(softly);
     }
 
     @AfterClass

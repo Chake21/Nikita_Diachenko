@@ -7,32 +7,23 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.asserts.SoftAssert;
 import ru.training.at.hw4.pageobjects.SidebarMenu;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 
-import static ru.training.at.hw4.Ex1Steps.PATH_TO_PROPERTIES;
+import static ru.training.at.hw4.Ex1Steps.prop;
 
 public class SidebarMenuSteps {
-    private final FileInputStream fileInputStream;
     private final SidebarMenu sidebarMenu;
-    Properties prop = new Properties();
 
-
-    public SidebarMenuSteps(WebDriver driver) throws IOException {
+    public SidebarMenuSteps(WebDriver driver) {
         PageFactory.initElements(driver, this);
         sidebarMenu = new SidebarMenu(driver);
-        fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);
-        prop.load(fileInputStream);
     }
 
     @Step("Assertion of sidebars text")
-    public void assertionOfSidebarsText(SoftAssert softly, WebDriver driver) {
+    public void assertionOfSidebarsText(SoftAssert softly) {
         for (WebElement navigationSidebarsElement : sidebarMenu.getNavigationSidebar()) {
             navigationSidebarsElement.isDisplayed();
         }
         softly.assertEquals(sidebarMenu.getNavigationSidebar().get(0).getText(),
                 prop.getProperty("ExpectedNavigationSidebarText"));
     }
-
 }

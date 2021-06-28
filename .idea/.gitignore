@@ -4,5 +4,6 @@
 # Datasource local storage ignored files
 /../../../../../../:\Users\Nikita\IdeaProjects\hw1\.idea/dataSources/
 /dataSources.local.xml
+/.idea/
 # Editor-based HTTP Client requests
 /httpRequests/

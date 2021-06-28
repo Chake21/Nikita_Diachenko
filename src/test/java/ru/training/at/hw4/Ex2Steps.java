@@ -12,17 +12,15 @@ import org.testng.annotations.Test;
 import ru.training.at.hw4.driverutils.DriverManager;
 import ru.training.at.hw4.ex2steps.*;
 
-import java.io.IOException;
-
 public class Ex2Steps extends DriverManager {
     DriverManager driverManager = new DriverManager();
-    WebDriver webDriver = driverManager.setupDriver();
+    WebDriver webDriver;
     private final HomePageSteps homePageSteps;
     private final LoginFormSteps loginFormSteps;
     private final OpenSiteSteps openSiteSteps;
     private final ElementsPageSteps elementsPageSteps;
 
-    public Ex2Steps() throws IOException {
+    public Ex2Steps() {
         webDriver = driverManager.setupDriver();
         PageFactory.initElements(webDriver, this);
         homePageSteps = new HomePageSteps(webDriver);
@@ -57,7 +55,7 @@ public class Ex2Steps extends DriverManager {
     @Feature("Login Things")
     @Story("Login in")
     public void login() {
-        loginFormSteps.login(webDriver);
+        loginFormSteps.login();
     }
 
     @Epic("Exercise 2")
@@ -65,14 +63,14 @@ public class Ex2Steps extends DriverManager {
     @Story("Login Assertion")
     @Test(priority = 3)
     public void loginAssertion() {
-        loginFormSteps.loginAssertion(webDriver);
+        loginFormSteps.loginAssertion();
     }
 
     @Epic("Exercise 2")
     @Story("Open page of elements")
     @Test(priority = 4)
     public void openDiffElementsPage() {
-        homePageSteps.openDifferentElementsPage(webDriver);
+        homePageSteps.openDifferentElementsPage();
     }
 
     @Epic("Exercise 2")
@@ -80,7 +78,7 @@ public class Ex2Steps extends DriverManager {
     @Story("Select Checkboxes")
     @Test(priority = 5)
     public void selectCheckboxes() {
-        elementsPageSteps.selectCheckboxes(webDriver);
+        elementsPageSteps.selectCheckboxes();
     }
 
     @Epic("Exercise 2")
@@ -88,7 +86,7 @@ public class Ex2Steps extends DriverManager {
     @Story("Select Radio")
     @Test(priority = 6)
     public void selectRadio() {
-        elementsPageSteps.selectRadio(webDriver);
+        elementsPageSteps.selectRadio();
     }
 
     @Epic("Exercise 2")
@@ -96,7 +94,7 @@ public class Ex2Steps extends DriverManager {
     @Story("Select Dropdown Menu")
     @Test(priority = 7)
     public void selectInDropdownMenu() {
-        elementsPageSteps.selectInDropdown(webDriver);
+        elementsPageSteps.selectInDropdown();
     }
 
     @Epic("Exercise 2")
@@ -104,7 +102,7 @@ public class Ex2Steps extends DriverManager {
     @Story("Logs Asserts")
     @Test(priority = 8)
     public void logsAsserts() {
-        elementsPageSteps.logsAsserts(webDriver);
+        elementsPageSteps.logsAsserts();
     }
 
     @AfterClass

@@ -9,6 +9,18 @@ import java.util.List;
 
 public class ElementsPage {
 
+
+    @FindBy(className = "label-checkbox")
+    private List<WebElement> checkboxes;
+    @FindBy(className = "label-radio")
+    private List<WebElement> radios;
+    @FindBy(className = "colors")
+    private WebElement colorsDropdown;
+    @FindBy(tagName = "option")
+    private List<WebElement> options;
+    @FindBy(className = "info-panel-section")
+    private List<WebElement> panelSection;
+
     public ElementsPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
@@ -32,16 +44,4 @@ public class ElementsPage {
     public List<WebElement> getPanelSection() {
         return panelSection;
     }
-
-    @FindBy(className = "label-checkbox")
-    private List<WebElement> checkboxes;
-    @FindBy(className = "label-radio")
-    private List<WebElement> radios;
-    @FindBy(className = "colors")
-    private WebElement colorsDropdown;
-    @FindBy(tagName = "option")
-    private List<WebElement> options;
-    @FindBy(className = "info-panel-section")
-    private List<WebElement> panelSection;
-
 }

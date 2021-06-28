@@ -5,21 +5,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-
-import static ru.training.at.hw4.Ex1Steps.PATH_TO_PROPERTIES;
+import static ru.training.at.hw4.Ex1Steps.prop;
 
 public class OpenSiteSteps {
 
-    private final FileInputStream fileInputStream;
-    Properties prop = new Properties();
 
-    public OpenSiteSteps(WebDriver driver) throws IOException {
+    public OpenSiteSteps(WebDriver driver) {
         PageFactory.initElements(driver, this);
-        fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);
-        prop.load(fileInputStream);
     }
 
     @Step("Open Test Site")

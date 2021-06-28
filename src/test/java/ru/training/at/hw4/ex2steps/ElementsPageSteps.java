@@ -7,30 +7,22 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import ru.training.at.hw4.pageobjects.ElementsPage;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
-import static ru.training.at.hw4.Ex1Steps.PATH_TO_PROPERTIES;
+import static ru.training.at.hw4.Ex1Steps.prop;
 
 public class ElementsPageSteps {
     private final ElementsPage elementsPage;
-    private final FileInputStream fileInputStream;
-    Properties prop = new Properties();
 
-    public ElementsPageSteps(WebDriver driver) throws IOException {
+    public ElementsPageSteps(WebDriver driver) {
         PageFactory.initElements(driver, this);
         elementsPage = new ElementsPage(driver);
-        fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);
-        prop.load(fileInputStream);
     }
 
-
     @Step("Selecting Checkboxes")
-    public void selectCheckboxes(WebDriver driver) {
+    public void selectCheckboxes() {
         for (WebElement checkbox : elementsPage.getCheckboxes()) {
             if (checkbox.getText().equals(prop.getProperty("Water"))
                     || checkbox.getText().equals(prop.getProperty("Wind"))) {
@@ -39,9 +31,8 @@ public class ElementsPageSteps {
         }
     }
 
-
     @Step("Selecting Radio")
-    public void selectRadio(WebDriver driver) {
+    public void selectRadio() {
         for (WebElement radio : elementsPage.getRadios()) {
             if (radio.getText().equals(prop.getProperty("Selen"))) {
                 radio.click();
@@ -49,9 +40,8 @@ public class ElementsPageSteps {
         }
     }
 
-
     @Step("Selecting in Dropdown")
-    public void selectInDropdown(WebDriver driver) {
+    public void selectInDropdown() {
         elementsPage.getColorsDropdown().click();
         for (WebElement option : elementsPage.getOptions()) {
             if (prop.getProperty("Yellow").equals(option.getText())) {
@@ -60,9 +50,8 @@ public class ElementsPageSteps {
         }
     }
 
-
     @Step("Logs Asserts")
-    public void logsAsserts(WebDriver driver) {
+    public void logsAsserts() {
         for (WebElement section : elementsPage.getPanelSection()) {
             Assert.assertTrue(section.isDisplayed());
         }
