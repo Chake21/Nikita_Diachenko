@@ -1,0 +1,7 @@
+<suite name="TrelloApiTest">
+    <test name="TrelloApiTest">
+        <classes>
+            <class name="ru.training.at.api.TrelloApi"></class>
+        </classes>
+    </test>
+</suite>
