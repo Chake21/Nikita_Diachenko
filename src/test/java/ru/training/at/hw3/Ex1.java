@@ -4,13 +4,12 @@ import org.openqa.selenium.*;
 import org.testng.annotations.*;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.asserts.SoftAssert;
+import ru.training.at.hw3.dataproviders.DataProviderForHw3;
 import ru.training.at.hw3.pageobjects.*;
 import ru.training.at.hw3.driverutils.DriverManager;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Properties;
-import java.io.FileInputStream;
 
 public class Ex1 {
 
@@ -19,26 +18,19 @@ public class Ex1 {
     private final HeaderOfPage headerOfPage;
     private final SidebarMenu sidebarMenu;
     private final HomePage homePage;
-    private final FileInputStream fileInputStream;
     WebDriver webDriver = driverManager.setupDriver();
 
     public Ex1() throws IOException {
-
         PageFactory.initElements(webDriver, this);
         loginFormPage = new LoginForm(webDriver);
         headerOfPage = new HeaderOfPage(webDriver);
         sidebarMenu = new SidebarMenu(webDriver);
         homePage = new HomePage(webDriver);
-        fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);
-        prop.load(fileInputStream);
     }
 
-    public static final String PATH_TO_PROPERTIES = "src/test/resources/config.properties";
-    Properties prop = new Properties();
 
-
-    public void openTestSite(SoftAssert softly, Object expectedValue) {
-        webDriver.get(prop.getProperty("Homepage"));
+    public void openTestSite(SoftAssert softly, String homepage, Object expectedValue) {
+        webDriver.get(homepage);
         softly.assertEquals(webDriver.getCurrentUrl(),
                 expectedValue);
     }
@@ -47,16 +39,8 @@ public class Ex1 {
         softly.assertEquals(webDriver.getTitle(), expectedValue);
     }
 
-    public void login(SoftAssert softly, Object expectedValue) {
-        loginFormPage.getLoginForm().click();
-        loginFormPage.getNameField().sendKeys(prop.getProperty("Name"));
-        loginFormPage.getPassField().sendKeys(prop.getProperty("Password"));
-        loginFormPage.getLoginButton().click();
-        softly.assertEquals(loginFormPage.getLoggedButton().getText(),
-                expectedValue);
-    }
-
-    public void loginAssertion(SoftAssert softly, Object expectedValue) {
+    public void login(SoftAssert softly, String name, String password, Object expectedValue) {
+        loginFormPage.login(name, password);
         softly.assertEquals(loginFormPage.getUserName().getText(),
                 expectedValue);
     }
@@ -93,7 +77,7 @@ public class Ex1 {
     public void assertionOfButtonsExistence(SoftAssert softly, WebElement expectedValue) {
         webDriver.switchTo().frame(homePage.getFrame());
         softly.assertTrue(expectedValue.isDisplayed());
-        webDriver.switchTo().defaultContent();  //10.Switch to original window back
+        webDriver.switchTo().defaultContent();
     }
 
     public void assertionOfSidebarsText(SoftAssert softly, Object expectedValue) {
@@ -104,22 +88,21 @@ public class Ex1 {
                 expectedValue);
     }
 
-    @Test
-    public void runTests() {
+    @Test(dataProvider = "ex1DataProvider", dataProviderClass = DataProviderForHw3.class)
+    public void runTests(String homepage, String title, String name, String password,
+                         String fullName, String expectedTextsOfMenu, String allertForMessage,
+                         String expectedTextsOfImages, String allertForFrame,
+                         String expectedNavigationSidebarText) {
         SoftAssert softly = new SoftAssert();
-        openTestSite(softly, prop.getProperty("Homepage"));
-        browserTitleAssertion(softly, prop.getProperty("Title"));
-        login(softly, prop.getProperty("MessageForLoginCheck"));
-        loginAssertion(softly, prop.getProperty("NameForLoginCheck"));
-        assertionOfCountOfTextsOfMenu(softly, prop.getProperty("ExpectedTextsOfMenu"));
-        assertionOfCountOfImages(softly, prop
-                .getProperty("AllertForMessageIsntDisplayed"));
-        assertionOfTextsOfImages(softly, prop
-                .getProperty("ExpectedTextsOfImages"));
-        assertionOfIframesExistence(softly, prop
-                .getProperty("AllertForFrameIsntDisplayed"));
+        openTestSite(softly, homepage, homepage);
+        browserTitleAssertion(softly, title);
+        login(softly, name, password, fullName);
+        assertionOfCountOfTextsOfMenu(softly, expectedTextsOfMenu);
+        assertionOfCountOfImages(softly, allertForMessage);
+        assertionOfTextsOfImages(softly, expectedTextsOfImages);
+        assertionOfIframesExistence(softly, allertForFrame);
         assertionOfButtonsExistence(softly, homePage.getFrameButton());
-        assertionOfSidebarsText(softly, prop.getProperty("ExpectedNavigationSidebarText"));
+        assertionOfSidebarsText(softly, expectedNavigationSidebarText);
         softly.assertAll();
     }
 

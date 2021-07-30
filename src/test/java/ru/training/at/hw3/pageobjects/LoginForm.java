@@ -21,9 +21,6 @@ public class LoginForm {
     private WebElement passField;
     @FindBy(id = "user-name")
     private WebElement userName;
-    @FindBy(css = "body > header > div > nav > ul.uui-navigation.navbar-nav.navbar-right"
-            + " > li > div > div > button")
-    private WebElement loggedButton;
 
     public WebElement getLoginForm() {
         return loginForm;
@@ -45,7 +42,11 @@ public class LoginForm {
         return userName;
     }
 
-    public WebElement getLoggedButton() {
-        return loggedButton;
+    public void login(String name, String password) {
+        getLoginForm().click();
+        getNameField().sendKeys(name);
+        getPassField().sendKeys(password);
+        getLoginButton().click();
     }
+
 }

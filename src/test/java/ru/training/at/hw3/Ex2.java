@@ -6,6 +6,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
+import ru.training.at.hw3.dataproviders.DataProviderForHw3;
 import ru.training.at.hw3.driverutils.DriverManager;
 
 import java.io.FileInputStream;
@@ -40,63 +41,57 @@ public class Ex2 extends DriverManager {
     public static final String PATH_TO_PROPERTIES = "src/test/resources/config.properties";
     Properties prop = new Properties();
 
-    public void openTestSite() {
-        webDriver.get(prop.getProperty("Homepage"));
+    public void openTestSite(String homepage) {
+        webDriver.get(homepage);
         Assert.assertEquals(webDriver.getCurrentUrl(),
-                prop.getProperty("Homepage"));
+                homepage);
     }
 
-    public void browserTitleAssertion() {
-        Assert.assertEquals(webDriver.getTitle(), prop.getProperty("Title"));
+    public void browserTitleAssertion(String title) {
+        Assert.assertEquals(webDriver.getTitle(), title);
     }
 
-    public void login() {
-        loginFormPage.getLoginForm().click();
-        loginFormPage.getNameField().sendKeys(prop.getProperty("Name"));
-        loginFormPage.getPassField().sendKeys(prop.getProperty("Password"));
-        loginFormPage.getLoginButton().click();
-        Assert.assertEquals(loginFormPage.getLoggedButton().getText(),
-                prop.getProperty("MessageForLoginCheck"));
+    public void login(String name, String password) {
+        loginFormPage.login(name, password);
     }
 
-    public void loginAssertion() {
+    public void loginAssertion(String fullName) {
         Assert.assertEquals(loginFormPage.getUserName().getText(),
-                prop.getProperty("NameForLoginCheck"));
+                fullName);
     }
 
     public void openDifferentElementsPage() {
-        homePage.getOpenMenuService().click();
-        homePage.getOpenDifferentElements().click();
+        homePage.openDifferentElementsPage();
     }
 
-    public void selectCheckboxes() {
+    public void selectCheckboxes(String water) {
         for (WebElement checkbox : elementsPage.getCheckboxes()) {
-            if (checkbox.getText().equals(prop.getProperty("Water"))
-                    || checkbox.getText().equals(prop.getProperty("Water"))) {
+            if (checkbox.getText().equals(water)
+                    || checkbox.getText().equals(water)) {
                 checkbox.click();
             }
         }
     }
 
-    public void selectRadio() {
+    public void selectRadio(String selen) {
         for (WebElement radio : elementsPage.getRadios()) {
-            if (radio.getText().equals(prop.getProperty("Selen"))) {
+            if (radio.getText().equals(selen)) {
                 radio.click();
             }
         }
     }
 
-    public void selectInDropdown() {
+    public void selectInDropdown(String yellow) {
         elementsPage.getColorsDropdown().click();
         for (WebElement option : elementsPage.getOptions()) {
-            if (prop.getProperty("Yellow").equals(option.getText())) {
+            if (yellow.equals(option.getText())) {
                 option.click();
             }
         }
 
     }
 
-    public void logsAsserts() {
+    public void logsAsserts(String logparts) {
 
         for (WebElement section : elementsPage.getPanelSection()) {
             Assert.assertTrue(section.isDisplayed());
@@ -105,21 +100,23 @@ public class Ex2 extends DriverManager {
                 .map(WebElement::getText).collect(Collectors.toList());
         for (int i = 0; i < actualCollection.size(); i++) {
             Assert.assertTrue(actualCollection.get(0).contains(Arrays
-                    .asList(prop.getProperty("ExpectedLogsParts").split(",")).get(i)));
+                    .asList(logparts.split(",")).get(i)));
         }
     }
 
-    @Test
-    public void runTests() {
-        openTestSite();
-        browserTitleAssertion();
-        login();
-        loginAssertion();
+    @Test(dataProvider = "ex2DataProvider", dataProviderClass = DataProviderForHw3.class)
+    public void runTests(String homepage, String title, String name, String password,
+                         String fullName, String water, String selen,
+                         String yellow, String logParts) {
+        openTestSite(homepage);
+        browserTitleAssertion(title);
+        login(name, password);
+        loginAssertion(fullName);
         openDifferentElementsPage();
-        selectCheckboxes();
-        selectRadio();
-        selectInDropdown();
-        logsAsserts();
+        selectCheckboxes(water);
+        selectRadio(selen);
+        selectInDropdown(yellow);
+        logsAsserts(logParts);
     }
 
     @AfterClass
